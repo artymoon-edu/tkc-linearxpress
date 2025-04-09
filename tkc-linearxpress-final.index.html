@@ -1,0 +1,221 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TKC Linear Equation Solver with Methods</title>
+  <style>
+    body {
+      font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(to right, #F0FFF0, #E6FFFA);
+      color: #222;
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background: linear-gradient(90deg, #50C878, #FFD700);
+      color: #fff;
+      padding: 1.5rem 1rem;
+      text-align: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 2rem;
+    }
+
+    header p {
+      margin: 0.2rem;
+      font-style: italic;
+      font-size: 1rem;
+    }
+
+    .container {
+      max-width: 700px;
+      margin: 2rem auto;
+      padding: 2rem;
+      background-color: #ffffff;
+      border: 2px solid #FFD700;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    label {
+      font-weight: 600;
+      display: block;
+      margin-top: 1rem;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 0.5rem;
+      font-size: 1rem;
+      margin-top: 0.3rem;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+
+    button {
+      margin-top: 1.5rem;
+      background-color: #50C878;
+      color: white;
+      padding: 0.7rem 1.5rem;
+      font-size: 1rem;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #3ea062;
+    }
+
+    .output {
+      margin-top: 2rem;
+      padding: 1rem;
+      background-color: #fff8dc;
+      border-left: 6px solid #FFD700;
+      border-radius: 10px;
+      white-space: pre-line;
+    }
+
+    footer {
+      margin-top: 3rem;
+      text-align: center;
+      font-size: 0.9rem;
+      padding: 1rem;
+      color: #777;
+      border-top: 1px solid #ddd;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>TKC Linear Equation Solver</h1>
+    <p>Developed by Nur Syaza Auni Binti Mohd Asri, Practicum Teacher at Tunku Kurshiah College</p>
+  </header>
+
+  <div class="container">
+    <p>Solve the following system of linear equations:</p>
+    <p><strong>a₁x + b₁y = c₁</strong><br><strong>a₂x + b₂y = c₂</strong></p>
+
+    <label>a₁:</label>
+    <input type="number" id="a1" />
+
+    <label>b₁:</label>
+    <input type="number" id="b1" />
+
+    <label>c₁:</label>
+    <input type="number" id="c1" />
+
+    <label>a₂:</label>
+    <input type="number" id="a2" />
+
+    <label>b₂:</label>
+    <input type="number" id="b2" />
+
+    <label>c₂:</label>
+    <input type="number" id="c2" />
+
+    <label>Choose Method:</label>
+    <select id="method">
+      <option value="elimination">Elimination Method</option>
+      <option value="substitution">Substitution Method</option>
+    </select>
+
+    <button onclick="solve()">Solve</button>
+
+    <div id="result" class="output" style="display:none;"></div>
+  </div>
+
+  <footer>
+    © 2025 Tunku Kurshiah College – Math Project by Nur Syaza Auni Binti Mohd Asri
+  </footer>
+
+  <script>
+    function solve() {
+      const a1 = parseFloat(document.getElementById('a1').value);
+      const b1 = parseFloat(document.getElementById('b1').value);
+      const c1 = parseFloat(document.getElementById('c1').value);
+      const a2 = parseFloat(document.getElementById('a2').value);
+      const b2 = parseFloat(document.getElementById('b2').value);
+      const c2 = parseFloat(document.getElementById('c2').value);
+      const method = document.getElementById('method').value;
+      const resultDiv = document.getElementById('result');
+
+      if (method === "elimination") {
+        const det = a1 * b2 - a2 * b1;
+        if (det === 0) {
+          resultDiv.innerHTML = "<strong>No unique solution (lines are parallel or identical).</strong>";
+        } else {
+          let step = "Step-by-step Elimination Method:\n";
+
+          step += `1. Multiply equations to align y terms:\n`;
+          let eq1_mul = b2;
+          let eq2_mul = b1;
+
+          let A1 = a1 * eq1_mul;
+          let B1 = b1 * eq1_mul;
+          let C1 = c1 * eq1_mul;
+
+          let A2 = a2 * eq2_mul;
+          let B2 = b2 * eq2_mul;
+          let C2 = c2 * eq2_mul;
+
+          step += `   Eq1: ${A1}x + ${B1}y = ${C1}\n`;
+          step += `   Eq2: ${A2}x + ${B2}y = ${C2}\n\n`;
+
+          step += `2. Subtract Eq2 from Eq1 to eliminate y:\n`;
+          let xCoeff = A1 - A2;
+          let constDiff = C1 - C2;
+          let x = constDiff / xCoeff;
+          step += `   ${xCoeff}x = ${constDiff}\n`;
+          step += `   x = ${x.toFixed(2)}\n\n`;
+
+          step += `3. Substitute x back into Eq1:\n`;
+          let y = (c1 - a1 * x) / b1;
+          step += `   ${a1}(${x.toFixed(2)}) + ${b1}y = ${c1}\n`;
+          step += `   y = ${y.toFixed(2)}\n\n`;
+
+          step += `<strong>Final Answer:</strong> x = ${x.toFixed(2)}, y = ${y.toFixed(2)}`;
+          resultDiv.innerHTML = step.replace(/\n/g, "<br>");
+        }
+      } else {
+        let step = "Step-by-step Substitution Method:\n";
+
+        step += `1. Solve Eq1 for x in terms of y:\n`;
+        step += `   ${a1}x + ${b1}y = ${c1}\n`;
+        step += `   x = (${c1} - ${b1}y) / ${a1}\n\n`;
+
+        step += `2. Substitute x into Eq2:\n`;
+        step += `   ${a2}x + ${b2}y = ${c2}\n`;
+        step += `   ${a2} * ((${c1} - ${b1}y)/${a1}) + ${b2}y = ${c2}\n`;
+
+        let y_num = (a2 * c1 - c2 * a1);
+        let y_denom = (-a2 * b1 + b2 * a1);
+        let y = y_num / y_denom;
+
+        step += `   Solve for y:\n`;
+        step += `   y = ${y.toFixed(2)}\n\n`;
+
+        let x = (c1 - b1 * y) / a1;
+
+        step += `3. Substitute y into Eq1 to find x:\n`;
+        step += `   x = (${c1} - ${b1}*${y.toFixed(2)}) / ${a1}\n`;
+        step += `   x = ${x.toFixed(2)}\n\n`;
+
+        step += `<strong>Final Answer:</strong> x = ${x.toFixed(2)}, y = ${y.toFixed(2)}`;
+        resultDiv.innerHTML = step.replace(/\n/g, "<br>");
+      }
+
+      resultDiv.style.display = "block";
+    }
+  </script>
+
+</body>
+</html>
